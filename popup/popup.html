@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body {
+    font: 13px/1.5 system-ui, sans-serif;
+    width: 280px; margin: 0; padding: 12px;
+    background: #202124; color: #e8eaed;
+  }
+  h1 { font-size: 15px; margin: 0 0 2px; }
+  p.sub { margin: 0 0 10px; color: #9aa0a6; font-size: 12px; }
+  h2 { font-size: 12px; margin: 12px 0 4px; color: #9aa0a6; text-transform: uppercase; letter-spacing: .5px; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 3px 0; vertical-align: top; }
+  td kbd {
+    display: inline-block; min-width: 20px; text-align: center;
+    background: #3c4043; border-radius: 4px; padding: 1px 5px;
+    font: 12px ui-monospace, monospace; margin-right: 4px;
+  }
+  td.desc { color: #9aa0a6; }
+</style>
+</head>
+<body>
+  <h1>keyNav</h1>
+  <p class="sub">Numbered link hints for the keyboard.</p>
+  <h2>Anywhere</h2>
+  <table>
+    <tr><td><kbd>f</kbd></td><td class="desc">number the first 10 links</td></tr>
+    <tr><td><kbd>F</kbd></td><td class="desc">same, open in new tab</td></tr>
+  </table>
+  <h2>While hints are shown</h2>
+  <table>
+    <tr><td><kbd>1-9</kbd><kbd>0</kbd></td><td class="desc">activate the numbered link</td></tr>
+    <tr><td><kbd>p</kbd></td><td class="desc">next 10</td></tr>
+    <tr><td><kbd>o</kbd></td><td class="desc">previous 10 (wraps around)</td></tr>
+    <tr><td><kbd>esc</kbd></td><td class="desc">close hints</td></tr>
+  </table>
+</body>
+</html>

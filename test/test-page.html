@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>keyNav test page</title>
+<style>
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+  nav a { margin-right: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 24px 0; }
+  .grid a { display: block; padding: 14px; background: #eef; text-align: center; }
+  form { display: flex; flex-direction: column; gap: 10px; max-width: 400px; }
+  label { display: flex; flex-direction: column; gap: 4px; }
+  input, select, textarea { padding: 6px; font: inherit; }
+  button { padding: 8px 16px; font: inherit; }
+  .spacer { height: 60vh; }
+  .jsmenu { display: flex; gap: 4px; border: 1px solid #ccc; border-radius: 4px; padding: 4px; max-width: 460px; margin: 12px 0; background: #fafafa; }
+  .jsmenu .item { cursor: pointer; padding: 6px 14px; border-radius: 3px; }
+  .jsmenu .item:hover { background: #eee; }
+</style>
+</head>
+<body>
+  <nav>
+    <a href="https://example.com">Example</a>
+    <a href="https://www.wikipedia.org">Wikipedia</a>
+    <a href="https://news.ycombinator.com">Hacker News</a>
+    <a href="https://github.com">GitHub</a>
+    <a href="#forms">Jump to forms</a>
+  </nav>
+
+  <div class="jsmenu" id="jsmenu">
+    <div class="item" data-act="home">Home</div>
+    <div class="item" data-act="reports">Reports</div>
+    <div class="item" data-act="users">Users</div>
+    <div class="item" data-act="settings">Settings</div>
+  </div>
+  <p id="jsmenu-out" style="color:#060"></p>
+
+  <h1>keyNav test page</h1>
+  <p>
+    Press <b>f</b> to number the first 10 clickable elements (1-9 and 0).
+    <b>p</b>/<b>o</b> cycle through the rest, ten at a time; type a number to
+    activate. <b>F</b> opens the picked link in a new tab. Typing in the form
+    below is never hijacked.
+  </p>
+
+  <h2>Link grid (60 links)</h2>
+  <div class="grid" id="grid"></div>
+
+  <div class="spacer"></div>
+
+  <h2 id="forms">Forms</h2>
+  <form onsubmit="return false">
+    <label>Name <input type="text" placeholder="type here (typing is never hijacked)"></label>
+    <label>Topic
+      <select><option>News</option><option>Docs</option><option>Video</option></select>
+    </label>
+    <label>Notes <textarea rows="3"></textarea></label>
+    <div>
+      <button type="submit">Submit</button>
+      <button type="button" id="hello">Say hello</button>
+      <button disabled>Disabled (no hint)</button>
+    </div>
+  </form>
+  <p id="hello-out"></p>
+
+  <div class="spacer"></div>
+  <footer>
+    <a href="https://developer.chrome.com/docs/extensions">Extension docs</a>
+    <a href="https://vimium.com">Vimium</a>
+  </footer>
+
+  <script>
+    const grid = document.getElementById('grid');
+    for (let i = 1; i <= 60; i++) {
+      const a = document.createElement('a');
+      a.href = `https://example.com/page/${i}`;
+      a.textContent = `Link ${i}`;
+      grid.appendChild(a);
+    }
+    // JS-wired div menu: no href, no onclick attribute — only cursor:pointer
+    // and a JS click listener (like Semantic UI / jQuery nav bars).
+    document.querySelectorAll('#jsmenu .item').forEach((it) => {
+      it.addEventListener('click', () => {
+        document.getElementById('jsmenu-out').textContent =
+          'JS menu activated: ' + it.dataset.act;
+      });
+    });
+    document.getElementById('hello').addEventListener('click', () => {
+      document.getElementById('hello-out').textContent =
+        'Hello! (clicked via keyNav hint)';
+    });
+  </script>
+</body>
+</html>
