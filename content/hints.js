@@ -1,5 +1,5 @@
 // keyNav: link-hint engine.
-// Scans the page for clickable elements in reading order and shows them
+// Scans the viewport for clickable elements in reading order and shows them
 // ten at a time, labeled 1-9 and 0. p/o cycle through the pages; typing a
 // digit activates the matching element; shift+digit opens it in a new tab.
 
@@ -102,6 +102,14 @@
     });
   }
 
+  // Only hint what's on screen right now (partially visible counts).
+  function inViewport(el) {
+    const r = el.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
+    return r.bottom > 0 && r.right > 0 && r.top < vh && r.left < vw;
+  }
+
   // ---------- overlay ----------
   let host = null;
   let canvas = null;
@@ -161,7 +169,7 @@
 
   function open() {
     if (items.length) return false;
-    items = readingOrder(collectCandidates());
+    items = readingOrder(collectCandidates().filter(inViewport));
     if (!items.length) return false;
     ensureHost();
     page = 0;
@@ -208,8 +216,9 @@
       const d = document.createElement('div');
       d.className = 'label';
       d.textContent = DIGITS[i];
-      d.style.left = Math.max(0, Math.round(rect.left + window.scrollX)) + 'px';
-      d.style.top = Math.max(0, Math.round(rect.top + window.scrollY)) + 'px';
+      // Clamp so partly-visible elements still get an on-screen label.
+      d.style.left = Math.round(Math.max(0, rect.left) + window.scrollX) + 'px';
+      d.style.top = Math.round(Math.max(0, rect.top) + window.scrollY) + 'px';
       canvas.appendChild(d);
     }
     indicator.textContent = (page + 1) + ' / ' + pageCount();

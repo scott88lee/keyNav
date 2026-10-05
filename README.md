@@ -29,6 +29,7 @@ While hints are shown:
 
 Notes:
 
+- Only elements currently in the viewport are hinted (scroll, then Ctrl+G again to re-scan)
 - Elements are ordered top-to-bottom, left-to-right (reading order)
 - A small `n / total` counter shows which page of 10 you're on
 - Plain keys (including `f`) are untouched outside hint mode, so typing and site shortcuts (e.g. fullscreen) are never hijacked
