@@ -1,5 +1,5 @@
 // keyNav background service worker.
-// Opens URLs in new tabs (for F hints).
+// Opens URLs in new tabs (for Shift+number hints).
 
 chrome.runtime.onMessage.addListener((msg) => {
   if (!msg || msg.type !== 'openUrl' || typeof msg.url !== 'string') return;

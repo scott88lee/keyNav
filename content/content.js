@@ -1,41 +1,34 @@
 // keyNav: key capture for link hints.
-// Normal mode: only f/F do anything, and never inside a form field.
-// Hint mode: 1-9/0 activate the labeled element, p/o cycle pages, Esc closes.
+// Ctrl+G toggles the hint overlay; nothing else is captured when it's closed.
+// Hint mode: 1-9/0 click the labeled element, Shift+1-9/0 open it in a new
+// tab, p/o cycle pages, Esc or Ctrl+G closes.
 (() => {
   const { hints } = window.keyNav;
 
   let hintMode = false;
 
-  const isEditable = (t) =>
-    !!(
-      t &&
-      t.closest &&
-      t.closest(
-        'input, textarea, select, [contenteditable=""], [contenteditable="true"]'
-      )
-    );
-
   document.addEventListener(
     'keydown',
     (e) => {
-      if (e.ctrlKey || e.metaKey || e.altKey) return; // browser/page shortcuts
       if (e.isComposing) return; // IME in progress
 
-      if (hintMode) {
-        if (!hints.isOpen()) {
-          // A digit already activated a hint and closed the overlay.
-          hintMode = false;
-        } else {
-          handleHintKey(e);
-          return;
-        }
+      const isToggle =
+        e.code === 'KeyG' && e.ctrlKey && !e.shiftKey && !e.metaKey && !e.altKey;
+
+      if (hintMode && !hints.isOpen()) {
+        // A digit already activated a hint and closed the overlay.
+        hintMode = false;
       }
 
-      if (e.key === 'f' || e.key === 'F') {
-        if (e.repeat || isEditable(e.target)) return;
+      if (isToggle) {
+        if (e.repeat) return;
         e.preventDefault();
-        openHints(e.key === 'F');
+        if (hintMode) exitHints();
+        else openHints();
+        return;
       }
+
+      if (hintMode && !e.ctrlKey && !e.metaKey && !e.altKey) handleHintKey(e);
     },
     true
   );
@@ -57,14 +50,16 @@
       hints.prev();
       return;
     }
-    if (/^[0-9]$/.test(key)) {
+    // e.code, not e.key: Shift turns the digit into a symbol (!, @, ...).
+    const m = /^(?:Digit|Numpad)([0-9])$/.exec(e.code);
+    if (m) {
       e.preventDefault();
-      hints.typeDigit(key);
+      hints.typeDigit(m[1], e.shiftKey);
     }
   }
 
-  function openHints(newTab) {
-    hints.open({ newTab });
+  function openHints() {
+    hints.open();
     hintMode = hints.isOpen();
   }
 
@@ -77,7 +72,7 @@
   const params = new URLSearchParams(location.search);
   if (params.has('keynav')) {
     const go = () => {
-      openHints(false);
+      openHints();
       const p = parseInt(params.get('keynav'), 10);
       for (let i = 1; i < (Number.isFinite(p) ? p : 1); i++) hints.next();
     };

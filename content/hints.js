@@ -1,7 +1,7 @@
 // keyNav: link-hint engine.
 // Scans the page for clickable elements in reading order and shows them
 // ten at a time, labeled 1-9 and 0. p/o cycle through the pages; typing a
-// digit activates the matching element (or opens it in a new tab).
+// digit activates the matching element; shift+digit opens it in a new tab.
 
 (() => {
   const ns = (window.keyNav = window.keyNav || {});
@@ -156,16 +156,14 @@
   // ---------- hint session ----------
   let items = []; // all candidates, in reading order
   let page = 0;
-  let newTab = false;
 
   const pageCount = () => Math.ceil(items.length / PAGE_SIZE);
 
-  function open(opts = {}) {
+  function open() {
     if (items.length) return false;
     items = readingOrder(collectCandidates());
     if (!items.length) return false;
     ensureHost();
-    newTab = !!opts.newTab;
     page = 0;
     renderPage();
     onScroll = syncCanvas;
@@ -217,15 +215,15 @@
     indicator.textContent = (page + 1) + ' / ' + pageCount();
   }
 
-  function typeDigit(d) {
+  function typeDigit(d, newTab = false) {
     const idx = DIGITS.indexOf(d);
     if (idx < 0) return;
     const el = items[page * PAGE_SIZE + idx];
     if (!el) return;
-    activate(el);
+    activate(el, newTab);
   }
 
-  function activate(el) {
+  function activate(el, newTab) {
     close();
     el.scrollIntoView({ block: 'center' });
     if (newTab) {
