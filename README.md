@@ -35,6 +35,14 @@ Notes:
 - Plain keys (including `f`) are untouched outside hint mode, so typing and site shortcuts (e.g. fullscreen) are never hijacked
 - Only `Ctrl+G` is claimed; other `Ctrl`/`Alt`/`Meta` shortcuts pass through
 
+## YouTube player clicks
+
+YouTube ignores script-generated clicks on its player controls (e.g. the
+ad Skip button). For elements inside `#movie_player` on youtube.com, keyNav
+sends a real mouse click through the `debugger` permission. Chrome briefly
+shows a "keyNav started debugging this browser" bar while it does. If DevTools
+is already open on the tab, it falls back to a normal click.
+
 ## Test page
 
 Content scripts don't run on `file://` by default, so serve it:

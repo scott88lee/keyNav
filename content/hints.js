@@ -232,7 +232,32 @@
     activate(el, newTab);
   }
 
-  function activate(el, newTab) {
+  // YouTube ignores script-generated clicks on its player controls (the Skip
+  // button), so those get a real click from the background worker instead.
+  const needsRealClick = (el) =>
+    window === window.top &&
+    /(^|\.)youtube\.com$/.test(location.hostname) &&
+    !!el.closest('#movie_player');
+
+  async function realClick(el) {
+    try {
+      const a = await chrome.runtime.sendMessage({ type: 'debugAttach' });
+      if (!a || !a.ok) return false;
+      // Attaching shows an infobar that shifts the page; re-measure after.
+      await new Promise((r) => setTimeout(r, 200));
+      const r = el.getBoundingClientRect();
+      const res = await chrome.runtime.sendMessage({
+        type: 'debugClick',
+        x: r.left + r.width / 2,
+        y: r.top + r.height / 2,
+      });
+      return !!(res && res.ok);
+    } catch {
+      return false;
+    }
+  }
+
+  async function activate(el, newTab) {
     close();
     el.scrollIntoView({ block: 'center' });
     if (newTab) {
@@ -242,6 +267,7 @@
         return;
       }
     }
+    if (needsRealClick(el) && (await realClick(el))) return;
     el.dispatchEvent(new MouseEvent('click', {
       bubbles: true,
       cancelable: true,

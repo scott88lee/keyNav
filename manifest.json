@@ -3,6 +3,7 @@
   "name": "keyNav",
   "version": "0.1.0",
   "description": "Press Ctrl+G to number the first 10 clickable elements (1-9 and 0), type a number to activate. p/o cycle through the rest, ten at a time.",
+  "permissions": ["debugger"],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
