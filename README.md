@@ -25,7 +25,7 @@ While hints are shown:
 | `Shift` + `1-9`, `0` | open that element in a new tab |
 | `p` | next 10 |
 | `o` | previous 10 (wraps around) |
-| `Esc` / `Ctrl+G` | close hints |
+| `Ctrl+G` | close hints |
 
 Notes:
 

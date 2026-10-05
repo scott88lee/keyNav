@@ -1,7 +1,7 @@
 // keyNav: key capture for link hints.
 // Ctrl+G toggles the hint overlay; nothing else is captured when it's closed.
 // Hint mode: 1-9/0 click the labeled element, Shift+1-9/0 open it in a new
-// tab, p/o cycle pages, Esc or Ctrl+G closes.
+// tab, p/o cycle pages, Ctrl+G closes.
 (() => {
   const { hints } = window.keyNav;
 
@@ -35,11 +35,6 @@
 
   function handleHintKey(e) {
     const key = e.key;
-    if (key === 'Escape') {
-      e.preventDefault();
-      exitHints();
-      return;
-    }
     if (key.toLowerCase() === 'p') {
       e.preventDefault();
       hints.next();
